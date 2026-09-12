@@ -26,7 +26,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
   control:
-    needs: prepare
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -60,7 +59,6 @@ jobs:
     steps:
       - run: echo fanout
   parallel:
-    needs: fanout
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
