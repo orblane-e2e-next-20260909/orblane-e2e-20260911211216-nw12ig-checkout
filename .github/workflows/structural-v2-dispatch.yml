@@ -38,12 +38,9 @@ jobs:
         name: Start bounded lint task
         run: echo linting
         background: true
-      - name: Wait for preparation
-        wait: background-prepare
-      - name: Cancel stale lint task
-        cancel: background-lint
-      - name: Wait for all remaining background work
-        wait-all:
+      - wait: background-prepare
+      - cancel: background-lint
+      - wait-all: null
   reusable:
     needs: prepare
     uses: ./.github/workflows/reusable-advanced.yml
