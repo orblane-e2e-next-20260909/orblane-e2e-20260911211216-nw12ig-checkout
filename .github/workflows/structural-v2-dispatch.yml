@@ -7,10 +7,13 @@ jobs:
   prepare:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    container:
-      image: ghcr.io/orblane/structural-runner@sha256:0000000000000000000000000000000000000000000000000000000000000000
-    services:
-      postgres:
-        image: postgres@sha256:0000000000000000000000000000000000000000000000000000000000000000
     steps:
-      - run: echo safe
+      - id: background-prepare
+        run: echo preparing
+        background: true
+      - id: background-lint
+        run: echo linting
+        background: true
+      - wait: background-prepare
+      - cancel: background-lint
+      - wait-all:
