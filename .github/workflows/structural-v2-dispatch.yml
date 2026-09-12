@@ -57,11 +57,3 @@ jobs:
       queue: max
     steps:
       - run: echo fanout
-  parallel:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    steps:
-      - name: Parallel safe checks
-        parallel:
-          - run: echo lint
-          - run: echo unit
