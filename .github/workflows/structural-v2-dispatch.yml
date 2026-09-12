@@ -4,7 +4,6 @@ on:
 permissions:
   contents: read
   actions: read
-cache-mode: read
 concurrency:
   group: structural-v2-fixture
   queue: single
