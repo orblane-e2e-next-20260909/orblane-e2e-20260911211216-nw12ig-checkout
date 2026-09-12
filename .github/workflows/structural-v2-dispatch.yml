@@ -17,14 +17,27 @@ jobs:
       max-parallel: 2
       matrix:
         node: [20, 22]
-    container:
-      image: ghcr.io/orblane/structural-runner@sha256:0000000000000000000000000000000000000000000000000000000000000000
-    services:
-      postgres:
-        image: postgres@sha256:0000000000000000000000000000000000000000000000000000000000000000
     steps:
       - name: Checkout
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+      - id: background-prepare
+        name: Start bounded background task
+        run: echo preparing
+        background: true
+      - id: background-lint
+        name: Start bounded lint task
+        run: echo linting
+        background: true
+      - name: Wait for preparation
+        wait: background-prepare
+      - name: Cancel stale lint task
+        cancel: background-lint
+      - name: Wait for all remaining background work
+        wait-all:
+      - name: Parallel safe checks
+        parallel:
+          - run: echo lint
+          - run: echo unit
   reusable:
     needs: prepare
     uses: ./.github/workflows/reusable-advanced.yml
