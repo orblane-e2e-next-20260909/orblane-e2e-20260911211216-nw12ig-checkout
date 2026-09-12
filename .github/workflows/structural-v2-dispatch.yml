@@ -1,11 +1,63 @@
-name: Structural v2 validation probe
+name: Structural v2 coverage (manual only)
 on:
   workflow_dispatch:
 permissions:
   contents: read
+  actions: read
+cache-mode: read
+concurrency:
+  group: structural-v2-fixture
+  queue: single
 jobs:
   prepare:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        node: [20, 22]
+    container:
+      image: ghcr.io/orblane/structural-runner@sha256:0000000000000000000000000000000000000000000000000000000000000000
+    services:
+      postgres:
+        image: postgres@sha256:0000000000000000000000000000000000000000000000000000000000000000
     steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+      - id: background-prepare
+        name: Start bounded background task
+        run: echo preparing
+        background: true
+      - id: background-lint
+        name: Start bounded lint task
+        run: echo linting
+        background: true
+      - name: Wait for preparation
+        wait: background-prepare
+      - name: Cancel stale lint task
+        cancel: background-lint
+      - name: Wait for all remaining background work
+        wait-all:
+      - name: Parallel safe checks
+        parallel:
+          - run: echo lint
+          - run: echo unit
+  reusable:
+    needs: prepare
+    uses: ./.github/workflows/reusable-advanced.yml
+    strategy:
+      matrix:
+        flavor: [default]
+  fanout:
+    needs: [prepare, reusable]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        target: [default]
+    concurrency:
+      group: structural-v2-fanout
+      queue: max
+    steps:
+      - run: echo fanout
