@@ -3,13 +3,14 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
-cache-mode: read
-concurrency:
-  group: structural-v2-fixture
-  queue: single
 jobs:
   prepare:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    container:
+      image: ghcr.io/orblane/structural-runner@sha256:0000000000000000000000000000000000000000000000000000000000000000
+    services:
+      postgres:
+        image: postgres@sha256:0000000000000000000000000000000000000000000000000000000000000000
     steps:
       - run: echo safe
