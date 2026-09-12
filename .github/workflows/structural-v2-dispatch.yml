@@ -8,12 +8,6 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - id: background-prepare
-        run: echo preparing
-        background: true
-      - id: background-lint
-        run: echo linting
-        background: true
-      - wait: background-prepare
-      - cancel: background-lint
-      - wait-all:
+      - parallel:
+          - run: echo lint
+          - run: echo unit
