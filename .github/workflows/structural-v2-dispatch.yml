@@ -8,10 +8,4 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - run: echo safe
-  reusable:
-    needs: prepare
-    uses: ./.github/workflows/reusable-advanced.yml
-    strategy:
-      matrix:
-        flavor: [default]
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
