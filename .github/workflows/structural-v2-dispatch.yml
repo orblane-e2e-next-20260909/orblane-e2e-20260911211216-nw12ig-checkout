@@ -43,9 +43,3 @@ jobs:
         parallel:
           - run: echo lint
           - run: echo unit
-  reusable:
-    needs: prepare
-    uses: ./.github/workflows/reusable-advanced.yml
-    strategy:
-      matrix:
-        flavor: [default]
