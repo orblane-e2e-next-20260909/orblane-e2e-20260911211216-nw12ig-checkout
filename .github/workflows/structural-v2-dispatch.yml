@@ -8,6 +8,10 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - parallel:
-          - run: echo lint
-          - run: echo unit
+      - run: echo safe
+  reusable:
+    needs: prepare
+    uses: ./.github/workflows/reusable-advanced.yml
+    strategy:
+      matrix:
+        flavor: [default]
