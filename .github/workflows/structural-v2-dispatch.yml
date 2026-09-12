@@ -49,15 +49,3 @@ jobs:
     strategy:
       matrix:
         flavor: [default]
-  fanout:
-    needs: [prepare, reusable]
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    strategy:
-      matrix:
-        target: [default]
-    concurrency:
-      group: structural-v2-fanout
-      queue: max
-    steps:
-      - run: echo fanout
