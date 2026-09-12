@@ -58,6 +58,12 @@ jobs:
       group: structural-v2-fanout
       queue: max
     steps:
+      - run: echo fanout
+  parallel:
+    needs: fanout
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
       - name: Parallel safe checks
         parallel:
           - run: echo lint
