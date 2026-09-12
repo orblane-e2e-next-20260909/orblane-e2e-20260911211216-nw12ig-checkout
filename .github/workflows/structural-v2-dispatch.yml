@@ -25,6 +25,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+  control:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
       - id: background-prepare
         name: Start bounded background task
         run: echo preparing
@@ -33,16 +37,9 @@ jobs:
         name: Start bounded lint task
         run: echo linting
         background: true
-      - name: Wait for preparation
-        wait: background-prepare
-      - name: Cancel stale lint task
-        cancel: background-lint
-      - name: Wait for all remaining background work
-        wait-all: null
-      - name: Parallel safe checks
-        parallel:
-          - run: echo lint
-          - run: echo unit
+      - wait: background-prepare
+      - cancel: background-lint
+      - wait-all: null
   reusable:
     needs: prepare
     uses: ./.github/workflows/reusable-advanced.yml
@@ -50,7 +47,7 @@ jobs:
       matrix:
         flavor: [default]
   fanout:
-    needs: [prepare, reusable]
+    needs: [control, reusable]
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
@@ -61,3 +58,4 @@ jobs:
       queue: max
     steps:
       - run: echo fanout
+
