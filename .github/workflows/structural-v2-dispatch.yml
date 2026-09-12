@@ -25,6 +25,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+  control:
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
       - id: background-prepare
         name: Start bounded background task
         run: echo preparing
@@ -46,7 +51,7 @@ jobs:
       matrix:
         flavor: [default]
   fanout:
-    needs: [prepare, reusable]
+    needs: [control, reusable]
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
